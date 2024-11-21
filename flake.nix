@@ -78,6 +78,12 @@
             core = import ./modules/boards/nanopi-m6.nix;
             sd-image = ./modules/sd-image/nanopi-m6.nix;
           };
+          # NanoPC-T6
+          nanopc-t6-lts = {
+            core = import ./modules/boards/nanopc-t6-lts.nix;
+            # FIXME: wrong board
+            sd-image = ./modules/sd-image/nanopi-m6.nix;
+          };
         };
 
         formats = { config, ... }: {
@@ -188,7 +194,8 @@
         rawEfiImage-opi5 = self.nixosConfigurations.orangepi5-uefi.config.formats.rk3588-raw-efi;
         rawEfiImage-opi5plus = self.nixosConfigurations.orangepi5plus-uefi.config.formats.rk3588-raw-efi;
         rawEfiImage-rock5a = self.nixosConfigurations.rock5a-uefi.config.formats.rk3588-raw-efi;
-        rawEfiImage-nanopi-m6 = self.nixosConfigurations.nanopi-m6-uefi.config.formats.raw-efi;
+        rawEfiImage-nanopi-m6 = self.nixosConfigurations.nanopi-m6-uefi.config.formats.rk3588-raw-efi;
+        rawEfiImage-nanopc-t6-lts = self.nixosConfigurations.nanopi-t6-lts-uefi.config.formats.rk3588-raw-efi;
       };
 
       devShells.fhsEnv =

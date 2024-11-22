@@ -1,7 +1,11 @@
 # =========================================================================
 #      Nano Pi M6 Specific Configuration
 # =========================================================================
-{rk3588, ...}: let
+{
+  lib,
+  rk3588,
+  ...
+}: let
   pkgsKernel = rk3588.pkgsKernel;
 in {
   imports = [
@@ -33,7 +37,7 @@ in {
   #    https://github.com/friendlyarm/kernel-rockchip/blob/nanopi6-v6.1.y/arch/arm64/boot/dts/rockchip/rk3588-nanopi6-rev0a.dts
   hardware = {
     deviceTree = {
-      name = "rockchip/rk3588-nanopi6-rev0a.dtb";
+      name = lib.mkDefault "rockchip/rk3588-nanopi6-rev0a.dtb";
       overlays = [];
     };
 

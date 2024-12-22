@@ -36,6 +36,10 @@ in
     #  5. Then use `make menuconfig` in kernel's root directory to view and customize the kernel(like enable/disable rknpu, rkflash, ACPI(for UEFI) etc).
     #  6. copy the generated .config to ./pkgs/kernel/rk35xx_vendor_config and commit it.
     #
+    #
+    # armbian kernel includes libmali firmware in the driver by default. This
+    # makes the kernel fail to build with "file not found". We disable it by
+    # setting `CONFIG_MALI_CSF_INCLUDE_FW` to 'n'
     configfile = ./rk35xx_vendor_config;
     config = import ./rk35xx_vendor_config.nix;
   })

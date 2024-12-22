@@ -1,7 +1,7 @@
 # =========================================================================
 #      NanoPC-T6 Specific Configuration
 # =========================================================================
-{pkgs, ...}: {
+{...}: {
   imports = [
     ./nanopibase.nix
   ];
@@ -15,6 +15,6 @@
       overlays = [];
     };
 
-    firmware = [(pkgs.callPackage ../../pkgs/mali-firmware {})];
+    firmware = [];
   };
 }

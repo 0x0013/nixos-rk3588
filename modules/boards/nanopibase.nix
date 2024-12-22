@@ -2,6 +2,7 @@
 #      Nano Pi M6 Specific Configuration
 # =========================================================================
 {
+  pkgs,
   lib,
   rk3588,
   ...
@@ -13,7 +14,7 @@ in {
   ];
 
   boot = {
-    kernelPackages = pkgsKernel.linuxPackagesFor (pkgsKernel.callPackage ../../pkgs/kernel/vendor.nix {});
+    kernelPackages = pkgsKernel.linuxPackagesFor (pkgsKernel.callPackage ../../pkgs/kernel-armbian/vendor.nix {});
 
     # kernelParams copy from Armbian's /boot/armbianEnv.txt & /boot/boot.cmd
     kernelParams = [
@@ -41,6 +42,6 @@ in {
       overlays = [];
     };
 
-    firmware = [];
+    firmware = [(pkgs.callPackage ../../pkgs/mali-firmware {})];
   };
 }

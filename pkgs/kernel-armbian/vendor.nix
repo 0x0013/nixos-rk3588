@@ -23,9 +23,9 @@ in
     # https://github.com/Joshua-Riek/linux-rockchip/tree/noble
     src = fetchFromGitHub {
       owner = "armbian";
-      repo = "linux-ronkchip";
-      rev = "8026157bf376e31431282a188993c1716b03b393";
-      hash = "sha256-00000000000000000000000000000000000000000000";
+      repo = "linux-rockchip";
+      rev = "e3bac8bf6e184b2da9709ec7281f7462c7067750";
+      hash = "sha256-tw7VIYCOb77LpRZVgPzh1y9fqHS55cAv+pyDbINTu98=";
     };
 
     # Steps to the generated kernel config file

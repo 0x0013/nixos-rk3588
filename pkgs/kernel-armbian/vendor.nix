@@ -46,9 +46,9 @@ in
     # makes the kernel fail to build with "file not found". Copy it in
     # post-patch. Alternatively, disable it by setting
     # `CONFIG_MALI_CSF_INCLUDE_FW` to 'n'.
-    postPatch =
+    configurePhase = old.configurePhase +
       ''
+        mkdir -p drivers/gpu/arm/bifrost
         cp ${old.src}/drivers/gpu/arm/bifrost/mali_csffw.bin drivers/gpu/arm/bifrost/mali_csffw.bin
-      ''
-      + old.postPatch;
+      '';
   })

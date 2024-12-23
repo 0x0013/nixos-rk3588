@@ -47,6 +47,6 @@ in {
       extraPackages = [ (pkgs.callPackage ../../pkgs/mali-firmware/g24p0.nix {}).libmali-valhall-g610-g13p0-gbm ];
     };
 
-    firmware = [(pkgs.callPackage ../../pkgs/mali-firmware/g24p0.nix {}).mali-firmware-g24p0-01eac0];
+    # firmware = [(pkgs.callPackage ../../pkgs/mali-firmware/g24p0.nix {}).mali-firmware-g24p0-01eac0];
   };
 }

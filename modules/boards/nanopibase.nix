@@ -42,7 +42,11 @@ in {
       overlays = [];
     };
 
+    graphics = {
+      enable = true;
+      extraPackages = [ (pkgs.callPackage ../../pkgs/mali-firmware/g24p0.nix {}).libmali-valhall-g610-g13p0-gbm ];
+    };
+
     firmware = [(pkgs.callPackage ../../pkgs/mali-firmware/g24p0.nix {}).mali-firmware-g24p0-01eac0];
   };
-  environment.systemPackages = [(pkgs.callPackage ../../pkgs/mali-firmware/g24p0.nix {}).libmali-valhall-g610-g13p0-gbm];
 }

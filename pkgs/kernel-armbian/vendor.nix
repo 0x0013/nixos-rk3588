@@ -50,5 +50,5 @@ in
       ''
         cp ${old.src}/drivers/gpu/arm/bifrost/mali_csffw.bin drivers/gpu/arm/bifrost/mali_csffw.bin
       ''
-      ++ old.postPatch;
+      + old.postPatch;
   })

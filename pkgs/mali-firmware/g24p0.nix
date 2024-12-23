@@ -12,6 +12,7 @@
     hash = "sha256-sXHVJ2uuNXw1gU77ZpQN1kBIzPbKYgIX4f/8VD9spXo=";
   };
 in {
+  # Not using this as g25p0 is included in armbian kernel
   mali-firmware-g24p0-01eac0 = stdenvNoCC.mkDerivation {
     pname = "mali-g610-firmware";
     version = "g24p0-01eac0";
@@ -31,6 +32,7 @@ in {
     '';
   };
 
+  # this works for jellyfin tone-mapping OpenCL
   libmali-valhall-g610-g13p0-gbm = stdenv.mkDerivation rec {
     pname = "libmali-valhall-g610";
     version = "g13p0";

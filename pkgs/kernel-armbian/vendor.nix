@@ -43,11 +43,13 @@ in
     name = "k"; # dodge uboot length limits
     nativeBuildInputs = old.nativeBuildInputs ++ [ubootTools];
     # armbian kernel includes libmali firmware in the driver by default. This
-    # makes the kernel fail to build with "file not found". Copy it in
-    # post-patch. Alternatively, disable it by setting
-    # `CONFIG_MALI_CSF_INCLUDE_FW` to 'n'.
-    configurePhase = old.configurePhase +
-      ''
+    # makes the kernel fail to build with "file not found".
+    # HACK: Copy it to build dir as final action of configurePhase.
+    #
+    # Alternatively, disable it by setting `CONFIG_MALI_CSF_INCLUDE_FW` to 'n'.
+    configurePhase =
+      old.configurePhase
+      + ''
         mkdir -p drivers/gpu/arm/bifrost
         cp ${old.src}/drivers/gpu/arm/bifrost/mali_csffw.bin drivers/gpu/arm/bifrost/mali_csffw.bin
       '';

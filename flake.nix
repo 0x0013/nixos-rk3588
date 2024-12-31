@@ -90,6 +90,12 @@
             # FIXME: wrong board
             sd-image = ./modules/sd-image/nanopi-m6.nix;
           };
+          # NanoPC-T6-LTS
+          cm3588-nas = {
+            core = import ./modules/boards/cm3588-nas.nix;
+            # FIXME: wrong board
+            sd-image = ./modules/sd-image/nanopi-m6.nix;
+          };
         };
 
         formats = { config, ... }: {
@@ -203,6 +209,7 @@
         rawEfiImage-nanopi-m6 = self.nixosConfigurations.nanopi-m6-uefi.config.formats.rk3588-raw-efi;
         rawEfiImage-nanopc-t6-lts = self.nixosConfigurations.nanopc-t6-lts-uefi.config.formats.rk3588-raw-efi;
         rawEfiImage-nanopc-t6 = self.nixosConfigurations.nanopc-t6-uefi.config.formats.rk3588-raw-efi;
+        rawEfiImage-cm3588-nas = self.nixosConfigurations.cm3588-nas.config.formats.rk3588-raw-efi;
       };
 
       devShells.fhsEnv =

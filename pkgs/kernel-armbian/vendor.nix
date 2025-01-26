@@ -20,12 +20,12 @@ in
     version = "${modDirVersion}-armbian";
     extraMeta.branch = "6.1";
 
-    # https://github.com/Joshua-Riek/linux-rockchip/tree/noble
+    # https://github.com/armbian/linux-rockchip/tree/rk-6.1-rkr4.1
     src = fetchFromGitHub {
       owner = "armbian";
       repo = "linux-rockchip";
-      rev = "e3bac8bf6e184b2da9709ec7281f7462c7067750";
-      hash = "sha256-tw7VIYCOb77LpRZVgPzh1y9fqHS55cAv+pyDbINTu98=";
+      rev = "6f79806069de09d49c36ec40ffbcf4ebdafdb633";
+      hash = "sha256-sMt6RfJPgS4d7rWKH2+Fue6c1pm9n4lYvgACIsmrYmc=";
     };
 
     # Steps to the generated kernel config file

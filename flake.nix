@@ -2,10 +2,7 @@
   description = "A minimal NixOS configuration for the RK3588/RK3588S based SBCs";
 
   inputs = {
-    # pinned
-    # https://github.com/NixOS/nixpkgs/issues/376820
-    nixpkgs.url = "github:NixOS/nixpkgs/bff5f93f3673edf9c08670b9ffd3619752e76619";
-    # nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
 
     nixos-generators = {

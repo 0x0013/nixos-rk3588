@@ -13,19 +13,19 @@
   ubootTools,
   ...
 }: let
-  modDirVersion = "6.1.84";
+  modDirVersion = "6.1.99";
 in
   (linuxManualConfig {
     inherit modDirVersion;
     version = "${modDirVersion}-armbian";
     extraMeta.branch = "6.1";
 
-    # https://github.com/armbian/linux-rockchip/tree/rk-6.1-rkr4.1
+    # https://github.com/armbian/linux-rockchip/tree/rk-6.1-rkr5
     src = fetchFromGitHub {
       owner = "armbian";
       repo = "linux-rockchip";
-      rev = "6f79806069de09d49c36ec40ffbcf4ebdafdb633";
-      hash = "sha256-sMt6RfJPgS4d7rWKH2+Fue6c1pm9n4lYvgACIsmrYmc=";
+      rev = "0a01e383aa9a33bd7985b15f1105aadb8daa3582";
+      hash = "sha256-NNQEZSO470Tqj2dhPrMRHKm2YDSNHMJc4o0chvnWly8=";
     };
 
     # Steps to the generated kernel config file

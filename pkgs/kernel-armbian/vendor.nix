@@ -13,23 +13,23 @@
   ubootTools,
   ...
 }: let
-  modDirVersion = "6.1.99";
+  modDirVersion = "6.1.115";
 in
   (linuxManualConfig {
     inherit modDirVersion;
     version = "${modDirVersion}-armbian";
     extraMeta.branch = "6.1";
 
-    # https://github.com/armbian/linux-rockchip/tree/rk-6.1-rkr5
+    # https://github.com/armbian/linux-rockchip/tree/rk-6.1-rkr5.1
     src = fetchFromGitHub {
       owner = "armbian";
       repo = "linux-rockchip";
-      rev = "1a324b96cf07e314d70b48bd7945877c691074cc";
-      hash = "sha256-jBFDnCnfapZGAQ90ojbmdDxc3A8KcnhgL4Of+qmzPGo=";
+      rev = "7754a95dba532f05b62cfc3c3398265c9710db91";
+      hash = "sha256-syYe77WZQ8UKIy1RbGi0dZIrp4KeSi6z+t7Pbu62cFo=";
     };
 
     # Steps to the generated kernel config file
-    #  1. git clone --depth 1 https://github.com/armbian/linux-rockchip.git -b rk-6.1-rkr4.1
+    #  1. git clone --depth 1 https://github.com/armbian/linux-rockchip.git -b rk-6.1-rkr5.1
     #  2. put https://github.com/armbian/build/blob/main/config/kernel/linux-rk35xx-vendor.config to linux-rockchip/arch/arm64/configs/rk35xx_vendor_defconfig
     #  3. run `nix develop .#fhsEnv` in this project to enter the fhs test environment defined here.
     #  4. `cd linux-rockchip` and `make rk35xx_vendor_defconfig` to configure the kernel.

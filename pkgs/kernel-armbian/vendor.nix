@@ -19,6 +19,7 @@ in
     inherit modDirVersion;
     version = "${modDirVersion}-armbian";
     extraMeta.branch = "6.1";
+    features.efiBootStub = true;
 
     # https://github.com/armbian/linux-rockchip/tree/rk-6.1-rkr5.1
     src = fetchFromGitHub {

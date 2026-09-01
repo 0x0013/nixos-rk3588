@@ -25,8 +25,8 @@ in
     src = fetchFromGitHub {
       owner = "armbian";
       repo = "linux-rockchip";
-      rev = "5280f9b4336199c4025c8eed894d2b4e2268dcc6";
-      hash = "sha256-oeQTdBQk5oqFopDgtiqULDAM2WG98AvQIQ6fzL+EYkU=";
+      rev = "fd9f82366e235b8afbdf516765210e97d24dce93";
+      hash = "sha256-jDqorKCYL9KA4nOWTBCc4RDVVeLPs6hQgQDH6YZQuuA=";
     };
 
     # Steps to the generated kernel config file

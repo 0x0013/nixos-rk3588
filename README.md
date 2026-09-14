@@ -34,11 +34,11 @@ U-Boot support:
 
 ### FriendlyELEC UEFI images
 
-CM3588 NAS, NanoPC-T6 and NanoPC-T6 LTS use the existing Armbian vendor
-kernel with their respective vendor DTBs. These integrations are evaluation-checked;
-full image builds and hardware boot/peripheral testing are separate validation steps.
-No proprietary GPU userspace is added. CM3588 cooling still needs host-specific
-validation: the vendor DTB leaves the PWM fan disabled.
+CM3588 NAS, NanoPC-T6 and NanoPC-T6 LTS use the Armbian vendor
+kernel and board-specific vendor DTBs. Module evaluation has passed.
+Hardware boot and peripherals remain untested. These modules add no proprietary
+GPU userspace. The CM3588 vendor DTB disables the PWM fan, so check
+cooling before use.
 
 | Board | Core module under `nixosModules.boards` | Image package |
 | --- | --- | --- |
@@ -46,28 +46,29 @@ validation: the vendor DTB leaves the PWM fan disabled.
 | NanoPC-T6 | `nanopc-t6.core` | `rawEfiImage-nanopc-t6` |
 | NanoPC-T6 LTS | `nanopc-t6-lts.core` | `rawEfiImage-nanopc-t6-lts` |
 
-Build, for example, with `nix build .#rawEfiImage-cm3588-nas` (requires an
-AArch64 builder or emulation). The corresponding configuration is
-`nixosConfigurations.cm3588-nas-uefi`; the other boards use the same `-uefi` suffix.
-These raw UEFI disk images can be written to SD media and require compatible
-board-specific firmware already flashed. They contain no firmware, and these three
-boards export no U-Boot `sdImage` packages or SD-image modules.
+Build with `nix build .#rawEfiImage-cm3588-nas` on an AArch64 builder or with
+emulation. The configuration is `nixosConfigurations.cm3588-nas-uefi`;
+the other boards use the same `-uefi` suffix.
 
-Use Linux Device Tree mode and the Vendor compatibility setting for this kernel;
-record and verify the firmware version and settings before booting. See the
-[EDK2 device-tree guidance](https://github.com/edk2-porting/edk2-rk3588#device-tree-configuration),
-including its warnings about firmware fixups when supplying an external DTB.
-The new core modules preserve systemd-boot's native per-generation processed DTB
-installation and do not import the shared `/boot/dtb` installer.
-Their image-specific modules select systemd-boot inside the generated raw-efi
-configuration, replacing that format's default GRUB loader only for these boards.
-Images default to two boot-menu generations to bound usage of the approximately
-249 MiB ESP. Check free space before updates, especially with larger custom
-initrds; the generation limit does not guarantee they will fit.
-For a custom host, import its core module, provide `specialArgs.rk3588.pkgsKernel`
-as an AArch64 package set, and configure systemd-boot and filesystems yourself.
-Demo images retain the default account documented below; change its credentials
-before exposing a machine to the network.
+These raw disk images contain no firmware. Install compatible board-specific
+UEFI firmware first. Locate it before writing the OS image. A whole-disk write
+to the same SD/eMMC device can overwrite the firmware. Use separate OS media
+or preserve the firmware's reserved area and partition layout during installation.
+These boards have no U-Boot `sdImage` packages or SD-image modules.
+
+Use Linux Device Tree mode with Vendor compatibility. Record the firmware
+version and settings. Check the
+[EDK2 guidance on external DTBs and firmware fixups](https://github.com/edk2-porting/edk2-rk3588#device-tree-configuration).
+
+The images use systemd-boot with a processed DTB for each generation.
+The core modules do not install a shared `/boot/dtb` override.
+Images keep two boot-menu generations by default. Check free space on the
+approximately 249 MiB ESP before updates, especially with custom initrds.
+
+For a custom host, import its core module and provide
+`specialArgs.rk3588.pkgsKernel` as an AArch64 package set.
+Configure systemd-boot and filesystems yourself.
+Change the demo account credentials listed below before connecting to a network.
 
 ## TODO
 

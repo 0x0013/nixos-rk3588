@@ -105,6 +105,11 @@ I personally recommend running U-Boot, as our support for UEFI has known bugs (h
 
 Feel free to drop a testing report in the associated [discussions page](https://github.com/gnull/nixos-rk3588/discussions/2).
 
+## Optional vendor Mali OpenCL
+
+For opt-in, headless Mali G610 OpenCL (including tone-mapping), see
+[the module example and compatibility requirements](./examples/mali-opencl/README.md).
+
 ## Debug via serial port(UART)
 
 See [Debug.md](./Debug.md)

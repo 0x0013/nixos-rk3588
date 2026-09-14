@@ -69,6 +69,10 @@
             core = import ./modules/boards/nanopc-t6-lts.nix;
             uefi-image = ./modules/friendlyelec-uefi-image.nix;
           };
+          nanopi-r6c = {
+            core = import ./modules/boards/nanopi-r6c.nix;
+            uefi-image = ./modules/friendlyelec-uefi-image.nix;
+          };
 
           # Orange Pi 5 SBC
           orangepi5 = {
@@ -205,6 +209,7 @@
         rawEfiImage-cm3588-nas = self.nixosConfigurations.cm3588-nas-uefi.config.formats.rk3588-raw-efi;
         rawEfiImage-nanopc-t6 = self.nixosConfigurations.nanopc-t6-uefi.config.formats.rk3588-raw-efi;
         rawEfiImage-nanopc-t6-lts = self.nixosConfigurations.nanopc-t6-lts-uefi.config.formats.rk3588-raw-efi;
+        rawEfiImage-nanopi-r6c = self.nixosConfigurations.nanopi-r6c-uefi.config.formats.rk3588-raw-efi;
         rawEfiImage-opi5 = self.nixosConfigurations.orangepi5-uefi.config.formats.rk3588-raw-efi;
         rawEfiImage-opi5plus = self.nixosConfigurations.orangepi5plus-uefi.config.formats.rk3588-raw-efi;
         rawEfiImage-opi5pro = self.nixosConfigurations.orangepi5pro-uefi.config.formats.rk3588-raw-efi;

@@ -82,8 +82,8 @@ renamed it. Keep these overrides when updating the DTS.
 
 Use R6C-specific EDK2 firmware with Device Tree / Vendor compatibility.
 Record its version, storage location and override settings.
-Check the boot entry and active DTB. An old `/boot/dtb/base` override can
-prevent systemd-boot from selecting the current or rollback generation's DTB.
+Check the boot entry and active DTB on both current and rollback generations.
+Record any firmware DTB override settings.
 The vendor model is `FriendlyElec NanoPi R6C`, with compatibles
 `friendlyelec,nanopi-r6c` and `rockchip,rk3588`.
 [EDK2 firmware guidance](https://github.com/edk2-porting/edk2-rk3588#readme)

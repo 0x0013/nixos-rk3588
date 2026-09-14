@@ -34,7 +34,7 @@ U-Boot support:
 
 ### FriendlyELEC UEFI images
 
-CM3588 NAS, NanoPC-T6, NanoPC-T6 LTS and NanoPi R6C use the Armbian vendor
+CM3588 NAS, NanoPC-T6, NanoPC-T6 LTS, NanoPi R6C and NanoPi R6S use the Armbian vendor
 kernel and board-specific vendor DTBs. Module evaluation has passed.
 Hardware boot and peripherals remain untested. Proprietary GPU userspace is
 disabled by default. The CM3588 vendor DTB disables the PWM fan, so check
@@ -46,6 +46,7 @@ cooling before use.
 | NanoPC-T6 | `nanopc-t6.core` | `rawEfiImage-nanopc-t6` |
 | NanoPC-T6 LTS | `nanopc-t6-lts.core` | `rawEfiImage-nanopc-t6-lts` |
 | NanoPi R6C | `nanopi-r6c.core` | `rawEfiImage-nanopi-r6c` |
+| NanoPi R6S | `nanopi-r6s.core` | `rawEfiImage-nanopi-r6s` |
 
 Build with `nix build .#rawEfiImage-cm3588-nas` on an AArch64 builder or with
 emulation. The configuration is `nixosConfigurations.cm3588-nas-uefi`;
@@ -101,9 +102,32 @@ The base module enables redistributable firmware. No external `r8125` module
 is included. Check whether the installed NIC revision needs it.
 [Pinned r8169 driver](https://github.com/armbian/linux-rockchip/blob/b908c7339f51eddcfe8402cd15d1e1f8f4e67c29/drivers/net/ethernet/realtek/r8169_main.c)
 
+#### NanoPi R6S validation status
+
+Build with `nix build .#rawEfiImage-nanopi-r6s`. The configuration is
+`nixosConfigurations.nanopi-r6s-uefi`. It uses the unchanged vendor kernel and
+`rockchip/rk3588s-nanopi-r6s.dtb`, with model `FriendlyElec NanoPi R6S` and
+compatibles `friendlyelec,nanopi-r6s` and `rockchip,rk3588`.
+The built DTB retains GMAC1 and both PCIe Ethernet endpoints, `r8125_u25` and
+`r8125_u40`. The console is `ttyFIQ0` at 1500000 baud, as on R6C.
+[Pinned R6S DTS](https://github.com/armbian/linux-rockchip/blob/b908c7339f51eddcfe8402cd15d1e1f8f4e67c29/arch/arm64/boot/dts/rockchip/rk3588s-nanopi-r6s.dts)
+
+Use R6S-specific EDK2 firmware in Device Tree / Vendor mode. Locate its storage
+before writing the raw OS image, and preserve the firmware layout or use separate
+OS media. systemd-boot installs the processed DTB per generation. Record firmware
+DT override settings and check the selected boot entry and actual DTB on current
+and rollback generations. No U-Boot image is exported.
+[EDK2 firmware and DT guidance](https://github.com/edk2-porting/edk2-rk3588#readme)
+
+Image evaluation and built-DTB checks pass. Hardware boot testing remains pending.
+Before deployment, check serial recovery, all three Ethernet ports, firmware
+loading, MAC addresses, negotiated links and sustained traffic. Test storage,
+USB, LEDs and current and rollback boot generations on the board.
+
 ## TODO
 
-- [ ] UEFI support for Rock 5A, Rock 5B, Orange Pi 5B, NanoPi R6S.
+- [ ] UEFI support for Rock 5A, Rock 5B, Orange Pi 5B.
+- [ ] Complete NanoPi R6S hardware validation listed above.
 - [ ] Complete NanoPi R6C hardware validation listed above.
 - [ ] verify all the hardware features available by RK3588/RK3588s
   - [x] ethernet (rj45)

@@ -44,6 +44,10 @@ in
   configfile = ./rk35xx_vendor_config;
   config = import ./rk35xx_vendor_config.nix;
 }).overrideAttrs (old: {
+  # Matches CONFIG_EFI_STUB=y; expose it also with linuxManualConfig.
+  passthru = (old.passthru or {}) // {
+    features = (old.passthru.features or {}) // { efiBootStub = true; };
+  };
   name = "k"; # dodge uboot length limits
   nativeBuildInputs = old.nativeBuildInputs ++ [ ubootTools ];
 

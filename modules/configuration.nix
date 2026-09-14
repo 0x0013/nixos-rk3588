@@ -18,7 +18,6 @@ in {
     git # used by nix flakes
     curl
 
-    neofetch
     lm_sensors # `sensors`
     btop # monitor system resources
 

@@ -43,6 +43,9 @@
         inherit localSystem;
         crossSystem = aarch64System;
       };
+
+      # Only boards with an implemented U-Boot image module get SD outputs.
+      sdBoards = nixpkgs.lib.filterAttrs (_: board: board ? sd-image) self.nixosModules.boards;
     in
     {
       nixosModules = {
@@ -53,6 +56,19 @@
         rock5a = throw "'nixosModules.rock5a' has been renamed to 'nixosModules.boards.rock5a'";
 
         boards = {
+          cm3588-nas = {
+            core = import ./modules/boards/cm3588-nas.nix;
+            uefi-image = ./modules/friendlyelec-uefi-image.nix;
+          };
+          nanopc-t6 = {
+            core = import ./modules/boards/nanopc-t6.nix;
+            uefi-image = ./modules/friendlyelec-uefi-image.nix;
+          };
+          nanopc-t6-lts = {
+            core = import ./modules/boards/nanopc-t6-lts.nix;
+            uefi-image = ./modules/friendlyelec-uefi-image.nix;
+          };
+
           # Orange Pi 5 SBC
           orangepi5 = {
             core = import ./modules/boards/orangepi5.nix;
@@ -111,7 +127,7 @@
                 }
               ];
             })
-          self.nixosModules.boards)
+          sdBoards)
         # sdImage - boot via U-Boot - fully cross-compiled
         // (nixpkgs.lib.mapAttrs'
           (name: board:
@@ -137,7 +153,7 @@
                   }
                 ];
               }))
-          self.nixosModules.boards)
+          sdBoards)
         # UEFI system, boot via edk2-rk3588 - fully native
         // (nixpkgs.lib.mapAttrs'
           (name: board:
@@ -161,7 +177,7 @@
                   }
 
                   self.nixosModules.formats
-                ];
+                ] ++ nixpkgs.lib.optional (board ? uefi-image) board.uefi-image;
               }))
           self.nixosModules.boards);
     }
@@ -185,6 +201,9 @@
         sdImage-rock5a-cross = self.nixosConfigurations.rock5a-cross.config.system.build.sdImage;
 
         # UEFI raw image
+        rawEfiImage-cm3588-nas = self.nixosConfigurations.cm3588-nas-uefi.config.formats.rk3588-raw-efi;
+        rawEfiImage-nanopc-t6 = self.nixosConfigurations.nanopc-t6-uefi.config.formats.rk3588-raw-efi;
+        rawEfiImage-nanopc-t6-lts = self.nixosConfigurations.nanopc-t6-lts-uefi.config.formats.rk3588-raw-efi;
         rawEfiImage-opi5 = self.nixosConfigurations.orangepi5-uefi.config.formats.rk3588-raw-efi;
         rawEfiImage-opi5plus = self.nixosConfigurations.orangepi5plus-uefi.config.formats.rk3588-raw-efi;
         rawEfiImage-opi5pro = self.nixosConfigurations.orangepi5pro-uefi.config.formats.rk3588-raw-efi;

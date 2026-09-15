@@ -2,6 +2,20 @@
 
 Here we describe how to use UEFI([edk2-rk3588]) to boot NixOS on RK3588/RK3588s based SBCs.
 
+For NanoPi R6C, follow the [board-specific setup and validation
+notes](./README.md#nanopi-r6c-validation-status). Use Device Tree / Vendor mode
+and systemd-boot's per-generation DTB. Do not apply the legacy SPI and
+fixed-DTB-override instructions below to the R6C.
+Locate the firmware before writing the OS image. A whole-disk write to the
+same SD/eMMC device can overwrite it. Preserve the firmware layout or use
+separate OS media.
+
+For NanoPi R6S, follow the [R6S prerequisites and validation notes](./README.md#nanopi-r6s-validation-status)
+and build `nix build .#rawEfiImage-nanopi-r6s`. Use R6S-specific firmware in
+Device Tree / Vendor mode and preserve its storage layout when writing OS media.
+The image uses systemd-boot's per-generation DTB. The SPI flashing and fixed-DTB
+override steps below are not an R6S installation procedure.
+
 ## 1. Flash [edk2-rk3588] to SPI NOR flash
 
 > NOTE: Rock 5A seems do not have a SPI NOR flash, so you can skip this step directly.

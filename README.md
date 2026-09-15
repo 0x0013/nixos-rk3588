@@ -56,7 +56,9 @@ These raw disk images contain no firmware. Install compatible board-specific
 UEFI firmware first. Locate it before writing the OS image. A whole-disk write
 to the same SD/eMMC device can overwrite the firmware. Use separate OS media
 or preserve the firmware's reserved area and partition layout during installation.
-These boards have no U-Boot `sdImage` packages or SD-image modules.
+Separate experimental `sdImage-<board>` packages include U-Boot and use extlinux.
+See [FriendlyELEC U-Boot images](./U-Boot.md#friendlyelec-sd-images).
+The UEFI outputs and core-module defaults are unchanged.
 
 Use Linux Device Tree mode with Vendor compatibility. Record the firmware
 version and settings. Check the
@@ -116,7 +118,7 @@ Use R6S-specific EDK2 firmware in Device Tree / Vendor mode. Locate its storage
 before writing the raw OS image, and preserve the firmware layout or use separate
 OS media. systemd-boot installs the processed DTB per generation. Record firmware
 DT override settings and check the selected boot entry and actual DTB on current
-and rollback generations. No U-Boot image is exported.
+and rollback generations.
 [EDK2 firmware and DT guidance](https://github.com/edk2-porting/edk2-rk3588#readme)
 
 Image evaluation and built-DTB checks pass. Hardware boot testing remains pending.
@@ -144,14 +146,9 @@ USB, LEDs and current and rollback boot generations on the board.
 
 Default user: `rk`, default password: `rk3588`
 
-The SD card images built using this flake do not embed a bootloader,
-  and won't boot directly on a new board
-  (unlike Armbian images that do embed U-Boot and just run out of the box).
-You have to manually install a bootloader (UEFI or U-Boot) into the SPI flash of your board.
-To do that, you boot into an Armbian image and write a precompiled bootloader image into your SPI block device under `/dev`
-  — detailed instructions are given under links below.
-Once a bootloader is in SPI, you can boot NixOS images from this repo
-  (although make sure your NixOS config is set to use the right bootloader).
+Firmware requirements depend on the image. FriendlyELEC `sdImage-*` packages
+include U-Boot; their `rawEfiImage-*` counterparts need separately installed UEFI.
+Check the board-specific instructions below before changing existing firmware.
 
 This flake supports UEFI and U-Boot, here are the install steps:
 

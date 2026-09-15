@@ -59,22 +59,27 @@
         boards = {
           cm3588-nas = {
             core = import ./modules/boards/cm3588-nas.nix;
+            sd-image = import ./modules/sd-image/friendlyelec.nix "cm3588-nas-rk3588_defconfig";
             uefi-image = ./modules/friendlyelec-uefi-image.nix;
           };
           nanopc-t6 = {
             core = import ./modules/boards/nanopc-t6.nix;
+            sd-image = import ./modules/sd-image/friendlyelec.nix "nanopc-t6-rk3588_defconfig";
             uefi-image = ./modules/friendlyelec-uefi-image.nix;
           };
           nanopc-t6-lts = {
             core = import ./modules/boards/nanopc-t6-lts.nix;
+            sd-image = import ./modules/sd-image/friendlyelec.nix "nanopc-t6-rk3588_defconfig";
             uefi-image = ./modules/friendlyelec-uefi-image.nix;
           };
           nanopi-r6c = {
             core = import ./modules/boards/nanopi-r6c.nix;
+            sd-image = import ./modules/sd-image/friendlyelec.nix "nanopi-r6c-rk3588s_defconfig";
             uefi-image = ./modules/friendlyelec-uefi-image.nix;
           };
           nanopi-r6s = {
             core = import ./modules/boards/nanopi-r6s.nix;
+            sd-image = import ./modules/sd-image/friendlyelec.nix "nanopi-r6s-rk3588s_defconfig";
             uefi-image = ./modules/friendlyelec-uefi-image.nix;
           };
 
@@ -197,6 +202,11 @@
     {
       packages = {
         # sdImage
+        sdImage-cm3588-nas = self.nixosConfigurations.cm3588-nas.config.system.build.sdImage;
+        sdImage-nanopc-t6 = self.nixosConfigurations.nanopc-t6.config.system.build.sdImage;
+        sdImage-nanopc-t6-lts = self.nixosConfigurations.nanopc-t6-lts.config.system.build.sdImage;
+        sdImage-nanopi-r6c = self.nixosConfigurations.nanopi-r6c.config.system.build.sdImage;
+        sdImage-nanopi-r6s = self.nixosConfigurations.nanopi-r6s.config.system.build.sdImage;
         sdImage-opi5 = self.nixosConfigurations.orangepi5.config.system.build.sdImage;
         sdImage-opi5b = self.nixosConfigurations.orangepi5b.config.system.build.sdImage;
         sdImage-opi5plus = self.nixosConfigurations.orangepi5plus.config.system.build.sdImage;
@@ -221,6 +231,11 @@
         rawEfiImage-rock5a = self.nixosConfigurations.rock5a-uefi.config.formats.rk3588-raw-efi;
       } // nixpkgs.lib.optionalAttrs (system == aarch64System) {
         mali-g610-opencl = pkgs.callPackage ./pkgs/mali-g610-opencl { };
+        uboot-cm3588-nas = self.nixosConfigurations.cm3588-nas.config.system.build.uboot;
+        uboot-nanopc-t6 = self.nixosConfigurations.nanopc-t6.config.system.build.uboot;
+        uboot-nanopc-t6-lts = self.nixosConfigurations.nanopc-t6-lts.config.system.build.uboot;
+        uboot-nanopi-r6c = self.nixosConfigurations.nanopi-r6c.config.system.build.uboot;
+        uboot-nanopi-r6s = self.nixosConfigurations.nanopi-r6s.config.system.build.uboot;
       };
 
       devShells.fhsEnv =

@@ -2,9 +2,70 @@
 
 Here we describe how to use U-Boot to boot NixOS on RK3588/RK3588s based SBCs.
 
+## FriendlyELEC SD images
+
+These experimental images include firmware. Firmware builds and module evaluation
+pass; hardware boot, peripherals and rollback still need testing.
+They use the existing 6.1.115 vendor kernel, without a kernel upgrade.
+
+| Board | Image package | U-Boot defconfig |
+| --- | --- | --- |
+| CM3588 NAS | `sdImage-cm3588-nas` | `cm3588-nas-rk3588_defconfig` |
+| NanoPC-T6 | `sdImage-nanopc-t6` | `nanopc-t6-rk3588_defconfig` |
+| NanoPC-T6 LTS | `sdImage-nanopc-t6-lts` | `nanopc-t6-rk3588_defconfig` |
+| NanoPi R6C | `sdImage-nanopi-r6c` | `nanopi-r6c-rk3588s_defconfig` |
+| NanoPi R6S | `sdImage-nanopi-r6s` | `nanopi-r6s-rk3588s_defconfig` |
+
+Build on a native AArch64 machine or a configured remote AArch64 builder:
+
+```sh
+nix build .#sdImage-nanopc-t6
+# Firmware alone, without building Linux or an OS image:
+nix build .#packages.aarch64-linux.uboot-nanopc-t6
+```
+
+The same names apply to the other boards. OS images are under
+`result/sd-image/*.img.zst`; firmware packages contain `u-boot-rockchip.bin`.
+Custom SD-image configurations import both `nixosModules.boards.<board>.core`
+and `nixosModules.boards.<board>.sd-image`.
+
+The intended boot path is BootROM, Rockchip DDR initialization, U-Boot SPL,
+BL31, U-Boot, then extlinux and Linux. The combined firmware starts at sector
+64, before partitions beginning at 32 MiB. The standard NixOS MBR layout has
+an empty FAT partition followed by bootable ext4 root, labelled `NIXOS_SD`.
+`/boot/extlinux/extlinux.conf` and its kernel, initrd and processed vendor DTB
+are on root. Later `nixos-rebuild` updates write to that same `/boot`.
+[U-Boot Rockchip image format](https://docs.u-boot.org/en/v2025.10/board/rockchip/rockchip.html#package-the-image-with-u-boot-tpl-spl)
+
+U-Boot 2025.10 and rkbin are pinned through `flake.lock`'s nixpkgs input.
+Rockchip BL31 v1.48 is used for the vendor kernel's runtime firmware services.
+DDR v1.18 requires BL31 v1.47 or newer. Rockchip lists LP4/LP4x 32 GB support
+since DDR v1.09, but individual board RAM variants remain untested here.
+Check detected memory and DMC frequency changes on the actual board.
+[Rockchip firmware release notes](https://github.com/rockchip-linux/rkbin/blob/f43a462e7a1429a9d407ae52b4745033034a6cf9/doc/release/RK3588_EN.md)
+
+T6 and T6 LTS share firmware with upstream ADC-based board detection.
+Their Linux images still select separate vendor DTBs explicitly.
+R6C and R6S use separate U-Boot configurations and Linux DTBs.
+[T6 detection](https://github.com/u-boot/u-boot/blob/v2025.10/board/friendlyelec/nanopc-t6-rk3588/nanopc-t6-rk3588.c),
+[R6C configuration](https://github.com/u-boot/u-boot/blob/v2025.10/configs/nanopi-r6c-rk3588s_defconfig),
+[R6S configuration](https://github.com/u-boot/u-boot/blob/v2025.10/configs/nanopi-r6s-rk3588s_defconfig)
+
+Use UART2 at 1500000 baud for the first boot. The SD module adds the vendor
+`ttyFIQ0` console. Verify the firmware banner, RAM size, selected DTB, storage,
+each Ethernet port, cooling and a rollback generation before deployment.
+
+Existing SPI/eMMC firmware may take precedence over SD firmware. Record where
+EDK2 is installed and keep a recovery path. An EDK2 menu means this U-Boot path
+has not been selected. These images do not install an EFI bootloader, and
+writing one over media containing EDK2 can destroy that firmware. No automatic
+SPI/eMMC firmware update is configured. UEFI users should keep using the
+separate `rawEfiImage-*` outputs and [UEFI instructions](./UEFI.md).
+
 ## 1. Flash U-Boot to SPI NOR flash
 
-You should get the uboot from the vendor and flash it to the SPI NOR flash before doing anything NixOS
+This section covers images that require separately installed firmware.
+The FriendlyELEC images above already contain U-Boot for SD boot.
 
 1. Armbian on [Orange Pi 5](https://www.armbian.com/orange-pi-5/) / [Orange Pi 5 Plus](https://www.armbian.com/orange-pi-5-plus/) as an example:
    1. download the image and flash it to a sd card first

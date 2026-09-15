@@ -7,64 +7,55 @@
 # If you already have a generated configuration file, you can build a kernel that uses it with pkgs.linuxManualConfig
 # The difference between deconfig and the generated configuration file is that the generated configuration file is more complete,
 #
-{ fetchFromGitHub
-, linuxManualConfig
-, ubootTools
-, fetchurl
-, ...
-}:
-let
+{
+  fetchFromGitHub,
+  linuxManualConfig,
+  ubootTools,
+  ...
+}: let
   modDirVersion = "6.1.115";
 in
-(linuxManualConfig {
-  inherit modDirVersion;
-  version = "${modDirVersion}-armbian";
-  extraMeta.branch = "rk-6.1-rkr5.1";
+  (linuxManualConfig {
+    inherit modDirVersion;
+    version = "${modDirVersion}-armbian";
+    extraMeta.branch = "6.1";
+    features.efiBootStub = true;
 
-  # https://github.com/Joshua-Riek/linux-rockchip/tree/noble
-  src = fetchFromGitHub {
-    owner = "armbian";
-    repo = "linux-rockchip";
-    #rev = "rk-6.1-rkr5.1";
-    rev = "b908c7339f51eddcfe8402cd15d1e1f8f4e67c29";
-    hash = "sha256-70wGP16SJHs7I8HklhNdrJbWzfvcgJCupgfOq81e1U8=";
-  };
+    # https://github.com/armbian/linux-rockchip/tree/rk-6.1-rkr5.1
+    src = fetchFromGitHub {
+      owner = "armbian";
+      repo = "linux-rockchip";
+      rev = "fd9f82366e235b8afbdf516765210e97d24dce93";
+      hash = "sha256-jDqorKCYL9KA4nOWTBCc4RDVVeLPs6hQgQDH6YZQuuA=";
+    };
 
-  kernelPatches = [
-    {
-      name = "nanopi-r6c-pcie-node";
-      patch = ./patches/nanopi-r6c-pcie-node.patch;
-    }
-  ];
-
-  # Steps to the generated kernel config file
-  #  1. git clone --depth 1 https://github.com/hbiyik/linux.git -b rk-6.1-rkr3-panthor
-  #  2. put https://github.com/hbiyik/linux/blob/rk-6.1-rkr3-panthor/debian.rockchip/config/config.common.ubuntu to arch/arm64/configs/rk35xx_vendor_defconfig
-  #  3. run `nix develop .#fhsEnv` in this project to enter the fhs test environment defined here.
-  #  4. `make rk35xx_vendor_defconfig` in the kernel root directory to configure the kernel.
-  #  5. Then use `make menuconfig` in kernel's root directory to view and customize the kernel(like enable/disable rknpu, rkflash, ACPI(for UEFI) etc).
-  #  6. copy the generated .config to ./pkgs/kernel/rk35xx_vendor_config (also be sure to update the corresponding `.nix` file accordingly) and commit it.
-  # 
-  configfile = ./rk35xx_vendor_config;
-  config = import ./rk35xx_vendor_config.nix;
-}).overrideAttrs (old: {
-  # Matches CONFIG_EFI_STUB=y; required by systemd-boot on newer nixpkgs.
-  passthru = (old.passthru or { }) // {
-    features = ((old.passthru or { }).features or { }) // { efiBootStub = true; };
-  };
-  name = "k"; # dodge uboot length limits
-  nativeBuildInputs = old.nativeBuildInputs ++ [ ubootTools ];
-
-  # The hacky mali code tries to include a binary blob by a relative path,
-  # which works only when your src dir is the same as build dir. It breaks with
-  # Nix'es reproducible builds where these are cleanly separated. We patch the
-  # path to point be absolute. Not sure if this is a clean solution, but it
-  # seems to work.
-  postPatch =
-    ''
-      sed -i "drivers/gpu/arm/bifrost/csf/mali_kbase_csf_firmware.c" \
-        -e "s:drivers/gpu/arm/bifrost/mali_csffw.bin:$src/drivers/gpu/arm/bifrost/mali_csffw.bin:"
-    ''
-    + "\n"
-    + old.postPatch;
-})
+    # Steps to the generated kernel config file
+    #  1. git clone --depth 1 https://github.com/armbian/linux-rockchip.git -b rk-6.1-rkr5.1
+    #  2. put https://github.com/armbian/build/blob/main/config/kernel/linux-rk35xx-vendor.config to linux-rockchip/arch/arm64/configs/rk35xx_vendor_defconfig
+    #  3. run `nix develop .#fhsEnv` in this project to enter the fhs test environment defined here.
+    #  4. `cd linux-rockchip` and `make rk35xx_vendor_defconfig` to configure the kernel.
+    #  5. Then use `make menuconfig` in kernel's root directory to view and customize the kernel(like enable/disable rknpu, rkflash, ACPI(for UEFI) etc).
+    #  6. copy the generated .config to ./pkgs/kernel/rk35xx_vendor_config and commit it.
+    #
+    configfile = ./rk35xx_vendor_config;
+    config = import ./rk35xx_vendor_config.nix;
+  })
+  .overrideAttrs (old: {
+    # Expose EFI support without changing the preserved kernel derivation.
+    passthru = (old.passthru or {}) // {
+      features = (old.passthru.features or {}) // { efiBootStub = true; };
+    };
+    name = "k"; # dodge uboot length limits
+    nativeBuildInputs = old.nativeBuildInputs ++ [ubootTools];
+    # armbian kernel includes libmali firmware in the driver by default. This
+    # makes the kernel fail to build with "file not found".
+    # HACK: Copy it to build dir as final action of configurePhase.
+    #
+    # Alternatively, disable it by setting `CONFIG_MALI_CSF_INCLUDE_FW` to 'n'.
+    configurePhase =
+      old.configurePhase
+      + ''
+        mkdir -p drivers/gpu/arm/bifrost
+        cp ${old.src}/drivers/gpu/arm/bifrost/mali_csffw.bin drivers/gpu/arm/bifrost/mali_csffw.bin
+      '';
+  })

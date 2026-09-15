@@ -1,33 +1,21 @@
-# args of buildLinux:
-#   https://github.com/NixOS/nixpkgs/blob/nixos-unstable/pkgs/os-specific/linux/kernel/generic.nix
-# Note that this method will use the deconfig in source tree,
-# commbined the common configuration defined in pkgs/os-specific/linux/kernel/common-config.nix, which is suitable for a NixOS system.
-# but it't not suitable for embedded systems, so we comment it out.
-# ================================================================
-# If you already have a generated configuration file, you can build a kernel that uses it with pkgs.linuxManualConfig
-# The difference between deconfig and the generated configuration file is that the generated configuration file is more complete,
-#
 { fetchFromGitHub
 , linuxManualConfig
 , ubootTools
-, fetchurl
 , ...
 }:
 let
-  modDirVersion = "6.1.115";
+  modDirVersion = "6.1.172";
 in
 (linuxManualConfig {
   inherit modDirVersion;
   version = "${modDirVersion}-armbian";
-  extraMeta.branch = "rk-6.1-rkr5.1";
+  extraMeta.branch = "rk-6.1-rkr7.2";
 
-  # https://github.com/Joshua-Riek/linux-rockchip/tree/noble
   src = fetchFromGitHub {
     owner = "armbian";
     repo = "linux-rockchip";
-    #rev = "rk-6.1-rkr5.1";
-    rev = "b908c7339f51eddcfe8402cd15d1e1f8f4e67c29";
-    hash = "sha256-70wGP16SJHs7I8HklhNdrJbWzfvcgJCupgfOq81e1U8=";
+    rev = "f694b5f9d122192cd4af529dc279b22b4cc703c3";
+    hash = "sha256-b0AVSfL1T985KvTTLRV3yN5EkxgkQLjY8g9F9nnnTEo=";
   };
 
   kernelPatches = [
@@ -37,14 +25,8 @@ in
     }
   ];
 
-  # Steps to the generated kernel config file
-  #  1. git clone --depth 1 https://github.com/hbiyik/linux.git -b rk-6.1-rkr3-panthor
-  #  2. put https://github.com/hbiyik/linux/blob/rk-6.1-rkr3-panthor/debian.rockchip/config/config.common.ubuntu to arch/arm64/configs/rk35xx_vendor_defconfig
-  #  3. run `nix develop .#fhsEnv` in this project to enter the fhs test environment defined here.
-  #  4. `make rk35xx_vendor_defconfig` in the kernel root directory to configure the kernel.
-  #  5. Then use `make menuconfig` in kernel's root directory to view and customize the kernel(like enable/disable rknpu, rkflash, ACPI(for UEFI) etc).
-  #  6. copy the generated .config to ./pkgs/kernel/rk35xx_vendor_config (also be sure to update the corresponding `.nix` file accordingly) and commit it.
-  # 
+  # Preserve the integration config, with Armbian's rkr7.2 Valhall selection.
+  # Keep the config file and its Nix representation in sync when changing it.
   configfile = ./rk35xx_vendor_config;
   config = import ./rk35xx_vendor_config.nix;
 }).overrideAttrs (old: {
@@ -55,16 +37,5 @@ in
   name = "k"; # dodge uboot length limits
   nativeBuildInputs = old.nativeBuildInputs ++ [ ubootTools ];
 
-  # The hacky mali code tries to include a binary blob by a relative path,
-  # which works only when your src dir is the same as build dir. It breaks with
-  # Nix'es reproducible builds where these are cleanly separated. We patch the
-  # path to point be absolute. Not sure if this is a clean solution, but it
-  # seems to work.
-  postPatch =
-    ''
-      sed -i "drivers/gpu/arm/bifrost/csf/mali_kbase_csf_firmware.c" \
-        -e "s:drivers/gpu/arm/bifrost/mali_csffw.bin:$src/drivers/gpu/arm/bifrost/mali_csffw.bin:"
-    ''
-    + "\n"
-    + old.postPatch;
+  # Valhall embeds mali_csffw.h, which also works with separate build/source dirs.
 })

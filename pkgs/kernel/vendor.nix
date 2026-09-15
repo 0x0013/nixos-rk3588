@@ -26,9 +26,8 @@ in
   ];
 
   # Preserve the integration config, with Armbian's rkr7.2 Valhall selection.
-  # Keep the config file and its Nix representation in sync when changing it.
+  # linuxManualConfig reads y/m metadata directly from this raw config.
   configfile = ./rk35xx_vendor_config;
-  config = import ./rk35xx_vendor_config.nix;
 }).overrideAttrs (old: {
   name = "k"; # dodge uboot length limits
   nativeBuildInputs = old.nativeBuildInputs ++ [ ubootTools ];

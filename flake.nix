@@ -2,7 +2,8 @@
   description = "A minimal NixOS configuration for the RK3588/RK3588S based SBCs";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # Match the production RK package set for the kernel-upgrade trial.
+    nixpkgs.url = "github:NixOS/nixpkgs/34ab99075ac4f7e40cf037eef32cb1c360bb85e9";
     flake-utils.url = "github:numtide/flake-utils";
 
     nixos-generators = {

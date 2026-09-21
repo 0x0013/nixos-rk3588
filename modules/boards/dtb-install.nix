@@ -1,10 +1,6 @@
 {
   config,
-  lib,
-  options,
   pkgs,
-  modulesPath,
-  nixos-generators,
   ...
 }: let
   extraInstallCommands = ''
@@ -13,10 +9,7 @@
     ${pkgs.coreutils}/bin/sync
   '';
 in {
-  # Note that this is only needed on UEFI systems, even though we set it
-  # everywhere. It will have no effect unless `boot.loader.grub.enable = true`.
-  boot.loader = {
-    systemd-boot.extraInstallCommands = extraInstallCommands;
-    grub.extraInstallCommands = extraInstallCommands;
-  };
+  # Keep the shared DTB directory for GRUB consumers. Systemd-boot installs
+  # the selected, processed DTB with each generation via installDeviceTree.
+  boot.loader.grub.extraInstallCommands = extraInstallCommands;
 }

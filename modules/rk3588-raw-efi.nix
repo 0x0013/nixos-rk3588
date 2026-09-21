@@ -1,15 +1,18 @@
 {
-  config,
   lib,
-  options,
-  pkgs,
-  modulesPath,
   nixos-generators,
   ...
-}: let
-  # Import raw-efi from nixos-generators
-  raw-efi = nixos-generators.nixosModules.raw-efi;
-in {
-  # Reuse and extend the raw-efi format
-  imports = [raw-efi];
+}: {
+  imports = [nixos-generators.nixosModules.raw-efi];
+
+  boot.loader = {
+    grub.enable = lib.mkForce false;
+    systemd-boot = {
+      enable = true;
+      installDeviceTree = true;
+    };
+    efi.canTouchEfiVariables = false;
+  };
+
+  fileSystems."/boot".options = ["umask=0077"];
 }

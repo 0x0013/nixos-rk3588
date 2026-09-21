@@ -67,9 +67,9 @@ Then, flash the raw efi image to the board's SSD / SD card:
 # Please replace `/dev/sdX` with the correct device name of your sd card
 cat result | sudo dd status=progress bs=8M of=/dev/sdX
 
-# Due to https://github.com/ryan4yin/nixos-rk3588/issues/22
-# We have to add our dtbs into edk2-rk3588's overlays folder `/boot/dtb/base`
-# This is now done automatically as part of the rk3588-raw-efi format. See: modules/rk3588-raw-efi.nix
+# The raw EFI image uses systemd-boot. Each boot entry includes its own
+# kernel, initrd and processed device tree, so rollbacks select matching files.
+# The ESP is mounted with umask=0077.
 
 # ====================================
 # For Rock 5A(Not Work Yet!!!)
@@ -112,6 +112,12 @@ sudo losetup -d /dev/loop0
 ```
 
 After the flash is complete, remove the SD card and reboot, you should see the UEFI boot menu.
+
+The raw EFI format enables `boot.loader.systemd-boot.installDeviceTree`.
+It no longer copies device trees into the firmware's shared `/boot/dtb/base`
+directory. Existing files there are left untouched; check any firmware DTB
+override settings when migrating an existing installation. Configurations that
+use GRUB retain the shared-directory copy hook from `modules/boards/dtb-install.nix`.
 
 ## 3. Install NixOS into SSD / eMMC via `nixos-install`
 

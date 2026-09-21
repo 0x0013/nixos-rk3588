@@ -31,6 +31,10 @@ in
   };
 
   kernelPatches = [
+    {
+      name = "nanopi-r6c-pcie-node";
+      patch = ./patches/nanopi-r6c-pcie-node.patch;
+    }
   ];
 
   # Steps to the generated kernel config file

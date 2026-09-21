@@ -53,6 +53,26 @@
         rock5a = throw "'nixosModules.rock5a' has been renamed to 'nixosModules.boards.rock5a'";
 
         boards = {
+          cm3588-nas = {
+            core = import ./modules/boards/cm3588-nas.nix;
+            sd-image = ./modules/sd-image/cm3588-nas.nix;
+          };
+          nanopc-t6 = {
+            core = import ./modules/boards/nanopc-t6.nix;
+            sd-image = ./modules/sd-image/nanopc-t6.nix;
+          };
+          nanopc-t6-lts = {
+            core = import ./modules/boards/nanopc-t6-lts.nix;
+            sd-image = ./modules/sd-image/nanopc-t6-lts.nix;
+          };
+          nanopi-r6c = {
+            core = import ./modules/boards/nanopi-r6c.nix;
+            sd-image = ./modules/sd-image/nanopi-r6c.nix;
+          };
+          nanopi-r6s = {
+            core = import ./modules/boards/nanopi-r6s.nix;
+            sd-image = ./modules/sd-image/nanopi-r6s.nix;
+          };
           # Orange Pi 5 SBC
           orangepi5 = {
             core = import ./modules/boards/orangepi5.nix;
@@ -172,6 +192,16 @@
     {
       packages = {
         # sdImage
+        sdImage-cm3588-nas = self.nixosConfigurations.cm3588-nas.config.system.build.sdImage;
+        sdImage-cm3588-nas-cross = self.nixosConfigurations.cm3588-nas-cross.config.system.build.sdImage;
+        sdImage-nanopc-t6 = self.nixosConfigurations.nanopc-t6.config.system.build.sdImage;
+        sdImage-nanopc-t6-cross = self.nixosConfigurations.nanopc-t6-cross.config.system.build.sdImage;
+        sdImage-nanopc-t6-lts = self.nixosConfigurations.nanopc-t6-lts.config.system.build.sdImage;
+        sdImage-nanopc-t6-lts-cross = self.nixosConfigurations.nanopc-t6-lts-cross.config.system.build.sdImage;
+        sdImage-nanopi-r6c = self.nixosConfigurations.nanopi-r6c.config.system.build.sdImage;
+        sdImage-nanopi-r6c-cross = self.nixosConfigurations.nanopi-r6c-cross.config.system.build.sdImage;
+        sdImage-nanopi-r6s = self.nixosConfigurations.nanopi-r6s.config.system.build.sdImage;
+        sdImage-nanopi-r6s-cross = self.nixosConfigurations.nanopi-r6s-cross.config.system.build.sdImage;
         sdImage-opi5 = self.nixosConfigurations.orangepi5.config.system.build.sdImage;
         sdImage-opi5b = self.nixosConfigurations.orangepi5b.config.system.build.sdImage;
         sdImage-opi5plus = self.nixosConfigurations.orangepi5plus.config.system.build.sdImage;
@@ -185,6 +215,11 @@
         sdImage-rock5a-cross = self.nixosConfigurations.rock5a-cross.config.system.build.sdImage;
 
         # UEFI raw image
+        rawEfiImage-cm3588-nas = self.nixosConfigurations.cm3588-nas-uefi.config.formats.rk3588-raw-efi;
+        rawEfiImage-nanopc-t6 = self.nixosConfigurations.nanopc-t6-uefi.config.formats.rk3588-raw-efi;
+        rawEfiImage-nanopc-t6-lts = self.nixosConfigurations.nanopc-t6-lts-uefi.config.formats.rk3588-raw-efi;
+        rawEfiImage-nanopi-r6c = self.nixosConfigurations.nanopi-r6c-uefi.config.formats.rk3588-raw-efi;
+        rawEfiImage-nanopi-r6s = self.nixosConfigurations.nanopi-r6s-uefi.config.formats.rk3588-raw-efi;
         rawEfiImage-opi5 = self.nixosConfigurations.orangepi5-uefi.config.formats.rk3588-raw-efi;
         rawEfiImage-opi5plus = self.nixosConfigurations.orangepi5plus-uefi.config.formats.rk3588-raw-efi;
         rawEfiImage-opi5pro = self.nixosConfigurations.orangepi5pro-uefi.config.formats.rk3588-raw-efi;

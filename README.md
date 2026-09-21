@@ -23,6 +23,9 @@ UEFI support:
 | Orange Pi 5           | :heavy_check_mark: | :heavy_check_mark: |
 | Orange Pi 5 Plus      | :heavy_check_mark: | :heavy_check_mark: |
 | Rock 5A               | :no_entry_sign:    | :no_entry_sign:    |
+| CM3588 NAS            | :heavy_check_mark: | :question:        |
+| NanoPC-T6 / T6 LTS    | :heavy_check_mark: | :question:        |
+| NanoPi R6C / R6S      | :heavy_check_mark: | :question:        |
 
 U-Boot support:
 
@@ -31,10 +34,13 @@ U-Boot support:
 | Orange Pi 5           | :heavy_check_mark: | :heavy_check_mark: |
 | Orange Pi 5 Plus      | :heavy_check_mark: | :heavy_check_mark: |
 | Rock 5A               | :heavy_check_mark: | :no_entry_sign:    |
+| CM3588 NAS            | :heavy_check_mark: | :question:        |
+| NanoPC-T6 / T6 LTS    | :heavy_check_mark: | :question:        |
+| NanoPi R6C / R6S      | :heavy_check_mark: | :question:        |
 
 ## TODO
 
-- [ ] UEFI support for Rock 5A, Rock 5B, Orange Pi 5B, NanoPI R6C, NanoPi R6S.
+- [ ] UEFI support for Rock 5A, Rock 5B, Orange Pi 5B.
 - [ ] verify all the hardware features available by RK3588/RK3588s
   - [x] ethernet (rj45)
   - [x] m.2 interface(pcie & sata)
@@ -50,7 +56,7 @@ U-Boot support:
 
 Default user: `rk`, default password: `rk3588`
 
-The SD card images built using this flake do not embed a bootloader,
+Apart from the FriendlyELEC and Orange Pi 5 Pro images, SD card images built using this flake do not embed a bootloader,
   and won't boot directly on a new board
   (unlike Armbian images that do embed U-Boot and just run out of the box).
 You have to manually install a bootloader (UEFI or U-Boot) into the SPI flash of your board.

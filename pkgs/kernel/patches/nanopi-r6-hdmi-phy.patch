@@ -1,0 +1,17 @@
+From: NixOS RK3588 maintainers
+Subject: [PATCH] arm64: dts: rockchip: keep NanoPi R6 HDMI PHY enabled
+
+The unified HDMI/eDP PHY is enabled earlier in the common R6 DTS.
+Do not disable it again when supplying the training table. This fixes
+the HDMI provider for both R6C and R6S while preserving the table.
+
+--- a/arch/arm64/boot/dts/rockchip/rk3588s-nanopi-r6-common.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3588s-nanopi-r6-common.dtsi
+@@ -236,7 +236,6 @@
+ 		/* voltage swing 3, pre-emphasis 0 */
+ 		0x0d 0x00 0x00 0x00 0x00 0x00
+ 	>;
+-	status = "disabled";
+ };
+ 
+ &i2c0 {

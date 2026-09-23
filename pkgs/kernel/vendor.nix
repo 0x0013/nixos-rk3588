@@ -20,6 +20,10 @@ in
 
   kernelPatches = [
     {
+      name = "nanopi-r6-hdmi-phy";
+      patch = ./patches/nanopi-r6-hdmi-phy.patch;
+    }
+    {
       name = "nanopi-r6c-pcie-node";
       patch = ./patches/nanopi-r6c-pcie-node.patch;
     }

@@ -9,6 +9,8 @@ Add this to an aarch64-linux NixOS configuration with this flake as the
   nixpkgs.config.allowUnfreePredicate = pkg:
     lib.getName pkg == "mali-g610-opencl";
   hardware.mali-g610-opencl.enable = true;
+  # Optional: "g13p0" (default), "g24p0", or "g29p1".
+  hardware.mali-g610-opencl.version = "g13p0";
   environment.systemPackages = [ pkgs.clinfo ];
 }
 ```
@@ -64,7 +66,14 @@ into your existing outputs and unfree policy as appropriate.
 
 ## Compatibility and validation
 
-The package uses the binary previously tested with Jellyfin tone-mapping:
+`hardware.mali-g610-opencl.version` selects the pinned G13p0/G24p0 GBM
+binary from JeffyCN/mirrors `9b410e6c7e7f608458a81376c93480fb19faaee2`,
+or the G29p1 **OpenCL** (`-cl.so`, not `-gles.so`) binary from `libmali-next`
+`bf621d15f009509557d6b28f81427651695cac20`. Each selection installs
+one ICD with its absolute library path. The default retains the original
+G13p0 derivation.
+
+The default package uses the binary:
 `libmali-valhall-g610-g13p0-gbm.so`, JeffyCN/mirrors revision
 `9b410e6c7e7f608458a81376c93480fb19faaee2`.
 This package omits the unused standalone G24p0 firmware. Userspace and firmware

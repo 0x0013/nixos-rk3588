@@ -48,6 +48,10 @@ in
   configfile = ./rk35xx_vendor_config;
   config = import ./rk35xx_vendor_config.nix;
 }).overrideAttrs (old: {
+  # Matches CONFIG_EFI_STUB=y; required by systemd-boot on newer nixpkgs.
+  passthru = (old.passthru or { }) // {
+    features = ((old.passthru or { }).features or { }) // { efiBootStub = true; };
+  };
   name = "k"; # dodge uboot length limits
   nativeBuildInputs = old.nativeBuildInputs ++ [ ubootTools ];
 

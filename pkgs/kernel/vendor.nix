@@ -14,8 +14,8 @@ in
   src = fetchFromGitHub {
     owner = "armbian";
     repo = "linux-rockchip";
-    rev = "f694b5f9d122192cd4af529dc279b22b4cc703c3";
-    hash = "sha256-b0AVSfL1T985KvTTLRV3yN5EkxgkQLjY8g9F9nnnTEo=";
+    rev = "7a450901b9f6beb30c12e0362e627a7f1d3c03c6";
+    hash = "sha256-+/pYyJFKaZQXz0yZOPd5FdtZNgO/Wcy8t7Slnj8OdOQ=";
   };
 
   kernelPatches = [

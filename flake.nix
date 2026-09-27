@@ -46,6 +46,7 @@
     in
     {
       nixosModules = {
+        mali-g610-opencl = import ./modules/mali-g610-opencl.nix;
 
         orangepi5plus = throw "'nixosModules.orangepi5plus' has been renamed to 'nixosModules.boards.orangepi5plus'";
         orangepi5b = throw "'nixosModules.orangepi5b' has been renamed to 'nixosModules.boards.orangepi5b'";
@@ -224,6 +225,7 @@
         rawEfiImage-opi5plus = self.nixosConfigurations.orangepi5plus-uefi.config.formats.rk3588-raw-efi;
         rawEfiImage-opi5pro = self.nixosConfigurations.orangepi5pro-uefi.config.formats.rk3588-raw-efi;
         rawEfiImage-rock5a = self.nixosConfigurations.rock5a-uefi.config.formats.rk3588-raw-efi;
+        mali-g610-opencl = pkgsNative.callPackage ./pkgs/mali-g610-opencl { };
       };
 
       devShells.fhsEnv =

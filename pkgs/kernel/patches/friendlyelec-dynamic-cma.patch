@@ -1,0 +1,44 @@
+From: NixOS RK3588 maintainers
+Subject: [PATCH] arm64: dts: rockchip: allocate FriendlyELEC CMA pools dynamically
+
+The NanoPC-T6 and CM3588 NAS trees place their default CMA pools at a
+fixed physical address of 256 MiB. When booting via EFI, that DT-only
+reservation may not be reflected in the EFI memory map, so KASLR can
+relocate the kernel into the pool. CMA initialization then frees
+kernel-owned pages, causing bad-page reports and allocator crashes.
+
+Replace the fixed reg with size-based allocation so Linux selects free
+memory after reserving the kernel image. Preserve the existing pool sizes
+(256 MiB for NanoPC-T6, 128 MiB for CM3588 NAS) and constrain allocation
+below 4 GiB for 32-bit DMA consumers. NanoPC-T6 LTS inherits the T6 fix.
+
+Applies to: armbian/linux-rockchip f694b5f9d122192cd4af529dc279b22b4cc703c3
+Source: https://github.com/armbian/linux-rockchip/tree/f694b5f9d122192cd4af529dc279b22b4cc703c3/arch/arm64/boot/dts/rockchip
+Drop when the upstream board trees use dynamically allocated CMA pools.
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588-friendlyelec-cm3588-nas.dts b/arch/arm64/boot/dts/rockchip/rk3588-friendlyelec-cm3588-nas.dts
+--- a/arch/arm64/boot/dts/rockchip/rk3588-friendlyelec-cm3588-nas.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3588-friendlyelec-cm3588-nas.dts
+@@ -31,7 +31,8 @@
+ 		cma {
+ 			compatible = "shared-dma-pool";
+ 			reusable;
+-			reg = <0x0 (256 * 0x100000) 0x0 (128 * 0x100000)>;
++			size = <0x0 (128 * 0x100000)>;
++			alloc-ranges = <0x0 0x0 0x1 0x0>;
+ 			linux,cma-default;
+ 		};
+ 	};
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts b/arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts
+--- a/arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts
+@@ -28,7 +28,8 @@
+ 		cma {
+ 			compatible = "shared-dma-pool";
+ 			reusable;
+-			reg = <0x0 (256 * 0x100000) 0x0 (256 * 0x100000)>;
++			size = <0x0 (256 * 0x100000)>;
++			alloc-ranges = <0x0 0x0 0x1 0x0>;
+ 			linux,cma-default;
+ 		};
+ 	};

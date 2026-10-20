@@ -20,6 +20,10 @@ in
 
   kernelPatches = [
     {
+      name = "friendlyelec-dynamic-cma";
+      patch = ./patches/friendlyelec-dynamic-cma.patch;
+    }
+    {
       name = "nanopi-r6-hdmi-phy";
       patch = ./patches/nanopi-r6-hdmi-phy.patch;
     }
